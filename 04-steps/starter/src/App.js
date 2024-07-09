@@ -6,13 +6,13 @@ const messages = [
   "Invest your new income 🤑",
 ];
 
-export default function App(){
-  return(
+export default function App() {
+  return (
     <>
-    <Step/>
-    <Step/>
+      <Step />
+      {/* <Step/> */}
     </>
-  )
+  );
 }
 function Step() {
   const [step, setStep] = useState(1);
@@ -50,19 +50,12 @@ function Step() {
             Step {step}: {messages[step - 1]}
           </p>
           <div className="buttons">
-            <button
-              onClick={previous}
-              style={{ backgroundColor: "#7950f2", color: "#fff" }}
-            >
-              Previous
-            </button>
-            <button
-              onClick={() => next()}
-              style={{ backgroundColor: "#7950f2", color: "#fff" }}
-            >
-              Next
-            </button>{" "}
-            {/* arrow function is redundunt you shouldnt do this */}
+            <Button handleClick={previous} bgColor="#7950f2" textColor="#fff" >
+            <span>⏮️</span>Previous
+            </Button>
+            <Button handleClick={next} bgColor="#7950f2" textColor="#fff">
+            Next <span>⏭️</span>
+            </Button >
           </div>
         </div>
       )}
@@ -70,4 +63,16 @@ function Step() {
   );
 }
 
-
+function Button({children, handleClick, bgColor, textColor }) { //children is a built in method
+  return (
+    <button
+      onClick={handleClick}
+      style={{ backgroundColor: bgColor, color: textColor }}
+    >
+      {children}
+      {/* <span>{text === "Previous" && emoji}</span>
+      {text}
+      <span>{text === "Next" && emoji}</span> */}
+    </button>
+  );
+}

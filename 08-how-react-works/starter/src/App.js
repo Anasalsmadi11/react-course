@@ -39,7 +39,10 @@ function Tabbed({ content }) {
       </div>
 
       {activeTab <= 2 ? (
-        <TabContent item={content.at(activeTab)} />
+        <TabContent
+          key={content.at(activeTab).summary}
+          item={content.at(activeTab)}
+        /> // it is the same as content[activeTab]
       ) : (
         <DifferentContent />
       )}
@@ -63,7 +66,33 @@ function TabContent({ item }) {
   const [likes, setLikes] = useState(0);
 
   function handleInc() {
-    setLikes(likes + 1);
+    setLikes((likes) => likes + 1);
+  }
+  function handleTribbleInc() {
+    // setLikes(likes + 1);
+    // setLikes(likes + 1);
+    // setLikes(likes + 1); // after clicking, it will only increase it by 1
+
+    setLikes((likes) => likes + 1);
+    setLikes((likes) => likes + 1); // in callback functions we get access to the latest updated state
+    setLikes((likes) => likes + 1); // after clicking, it will increase it by 3
+
+    // handleInc() // this solution wont work if you set the state without callback cuz it wont update the value unless the comp is rendered
+    // handleInc()
+    // handleInc()
+  }
+
+  console.log("RENDER");
+  console.log(likes);
+
+  function handleUndo() {
+    setShowDetails(true); // try click undo without increasing number of likes, you will not see the RENDER word in the console.this means that the comp didnt get rendered and the reason is that the states are sill in their default valu so they are not updated.
+    setLikes(0); // updating states mean the component need to be rendered again but that doesnt happen directly but re-rendering is schedualed when the engine has "free time"
+    console.log(likes); // it will be 5 because state updating is asynchronous, that means the states only updated after rendering
+  }
+
+  function handleUndoLater() {
+    setTimeout(handleUndo, 2000);
   }
 
   return (
@@ -79,13 +108,13 @@ function TabContent({ item }) {
         <div className="hearts-counter">
           <span>{likes} ❤️</span>
           <button onClick={handleInc}>+</button>
-          <button>+++</button>
+          <button onClick={handleTribbleInc}>+++</button>
         </div>
       </div>
 
       <div className="tab-undo">
-        <button>Undo</button>
-        <button>Undo in 2s</button>
+        <button onClick={handleUndo}>Undo</button>
+        <button onClick={handleUndoLater}>Undo in 2s</button>
       </div>
     </div>
   );
