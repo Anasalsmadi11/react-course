@@ -59,12 +59,13 @@ console.log("C") // vid: 149 this will be print first cus useEffects works after
 
   useEffect(() => {
     /////// vid 145 ////////
+    const controller= new AbortController()
     async function fetchMovies() {
       try {
         setError("");
         setIsLoading(true);
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,{signal:controller.signal}
         ); // await cus fetch return a promise
 
         if (!res.ok)
@@ -74,6 +75,7 @@ console.log("C") // vid: 149 this will be print first cus useEffects works after
         if (data.Response === "False") throw new Error("movie not Found!");
         setMovies(data.Search);
         setIsLoading(false);
+        setError("")
         // console.log(data.Search); // it console it twice cus of react strict mode (try remove it in the index.js file and see)
       } catch (err) {
         if (err.name !== "AbortError") {
@@ -90,6 +92,9 @@ console.log("C") // vid: 149 this will be print first cus useEffects works after
     }
     handleCloseMovie();
     fetchMovies();
+    return ()=>{ // the clean up function get excuted when re-rendering and when unmounting.
+      controller.abort()
+    }
   }, [query]);
 
   function handleSelectMovie(id) {
@@ -227,10 +232,10 @@ function MovieDetails({ handleCloseMovie, selectedId, onAddWatched, watched }) {
       if (e.code === "Escape") {
         // console.log('called')
         handleCloseMovie();
+
       }
     }
     document.addEventListener("keydown", callback);
-
     return function () {
       document.removeEventListener("keydown", callback);
     }; // i need to clean up the listener cus each time a new movie mounts a new event listener will be added to the document (try click many videos then esc them youll see console print in the same number of movies opened)

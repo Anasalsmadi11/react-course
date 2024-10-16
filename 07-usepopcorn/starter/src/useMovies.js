@@ -13,12 +13,13 @@ export function useMovies(query,callback) {
 
     /////// vid 145 ////////
     // callback?.()
+    const controller = new AbortController()
     async function fetchMovies() {
       try {
         setError("");
         setIsLoading(true);
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,{signal:controller.signal}
         ); // await cus fetch return a promise
 
         if (!res.ok)
@@ -28,6 +29,7 @@ export function useMovies(query,callback) {
         if (data.Response === "False") throw new Error("movie not Found!");
         setMovies(data.Search);
         setIsLoading(false);
+        setError("")
         // console.log(data.Search); // it console it twice cus of react strict mode (try remove it in the index.js file and see)
       } catch (err) {
         if (err.name !== "AbortError") {
@@ -44,6 +46,9 @@ export function useMovies(query,callback) {
     }
     callback?.()
     fetchMovies();
+    return ()=>{ // the clean up function get excuted when re-rendering and when unmounting.
+      controller.abort();
+    }
   }, [query]);
   return [ movies, isLoading, error ];
 }

@@ -119,8 +119,8 @@ console.log("C") // vid: 149 this will be print first cus useEffects works after
     </>
   );
 }
-
 function MovieDetails({ handleCloseMovie, selectedId, onAddWatched, watched }) {
+
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState("");
@@ -170,6 +170,7 @@ function MovieDetails({ handleCloseMovie, selectedId, onAddWatched, watched }) {
   // const isTop = imdbRating > 8;
 
   useEffect(() => {
+
     async function getMovieDetails() {
       setIsLoading(true);
       const res = await fetch(
@@ -185,7 +186,7 @@ function MovieDetails({ handleCloseMovie, selectedId, onAddWatched, watched }) {
 
   useKey("Escape", handleCloseMovie);
 
-  console.log("aaaaaaaa");
+
   function handleAdd() {
     const newWatchedMovie = {
       imdbID: selectedId,
@@ -206,13 +207,16 @@ function MovieDetails({ handleCloseMovie, selectedId, onAddWatched, watched }) {
     (movie) => movie.imdbID === selectedId
   )?.userRating;
 
+
   useEffect(() => {
     //primary func(side effect func)
-    if (!title) return;
+    // if (!title) return;
     document.title = `Movie | ${title}`;
-    console.log("rendered");
+    console.log('this woont run in unmounting') // because of strict mode react comp renders many times but the last render wont excute what's inside the clean up function, that is why the title of the projects remains with the title name not overwrited with the 'Use Popcorn'
+    
     return () => {
-      // optional func(clean up func works only when unmount) the returned func is the clean up func inside the primary func
+      console.log(`this will run in unmounting`)
+      // optional func (it is the only funciton that also runs in unmounting too) the returned func is the clean up func inside the primary func
       // vid 155: clean up the side effect
       document.title = "Use Popcorn";
       console.log(`clean up the effect of the movie ${title}`);
