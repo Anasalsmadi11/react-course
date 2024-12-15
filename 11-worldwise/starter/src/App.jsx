@@ -44,7 +44,7 @@ function App() {
         <Route path="pricing" element={<Pricing />} />
         <Route path="/product" element={<Product />} />
         {/* not important to put / here */}
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login />} /> {/* react checks if the path in the url equals to /login then displays the login component */}
         <Route path="/app" element={<AppLayout />}>
           <Route index element={<Navigate replace to="cities" />}/>
           {/* this "index element" is the default of what appear once i hit the app route or what appears when i return from one of the children routes like cities because without it when i return nothing will appear 

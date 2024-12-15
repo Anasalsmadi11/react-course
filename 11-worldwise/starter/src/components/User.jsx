@@ -1,3 +1,4 @@
+import { useAuth } from "../contexts/FakeAuth";
 import styles from "./User.module.css";
 
 const FAKE_USER = {
@@ -8,10 +9,14 @@ const FAKE_USER = {
 };
 
 function User() {
-  const user = FAKE_USER;
+  // const user = FAKE_USER;
+  const { logout, user, isAuthenticated } = useAuth();
 
-  function handleClick() {}
+  function handleClick() {
+    logout();
+  }
 
+  if (!isAuthenticated) return; // this is necessary cus once i logout th user object become null which results in an error
   return (
     <div className={styles.user}>
       <img src={user.avatar} alt={user.name} />
